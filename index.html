@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <title>Aqário</title>
+    <link rel='stylesheet' href='../css/estilo.css'>
+</head>
+
+<body class="conteudo">
+    <nav>
+        <h1 class="title">Edson Aquários</h1>
+        <div class="nav-links">
+            <a href wm-link="peixes.html" wm-destino=".pagina">Peixes</a> |
+            <a href wm-link="algas.html" wm-destino=".pagina">Algas</a>
+        </div>
+    </nav>
+    <div class="pagina"></div>
+
+    <script>
+        function navegarViaAjax(url, seletor, push = true) {
+            if (!url || !seletor) return
+            const elemento = document.querySelector(seletor)
+            fetch(url)
+                .then(resp => resp.text())
+                .then(html => {
+                    elemento.innerHTML = html
+                    if (push) {
+                        history.pushState({ seletor }, "Página Ajax", url)
+                    }
+                })
+        }
+
+        document.querySelectorAll('[wm-link]').forEach(link => {
+            const url = link.attributes['wm-link'].value
+            const seletorDestino = link.attributes['wm-destino'].value
+
+            link.onclick = e => {
+                e.preventDefault()
+                navegarViaAjax(url, seletorDestino)
+            }
+        })
+
+        window.onpopstate = e => {
+            if (e.state) {
+                navegarViaAjax(window.location.href, e.state.seletor, false)
+            }
+        }
+    </script>
+</body>
+</html>
+
+<style>
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    background-color: #f0f8ff; /* subtle background */
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* title left, links right */
+    font-size: 2em;
+    padding: 0 20px;
+}
+
+
+.nav-links a {
+    text-decoration: none;
+    color: #333333;
+    padding: 0 10px;
+}
+
+</style>
